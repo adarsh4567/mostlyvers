@@ -32,7 +32,7 @@
       ],
       "expo-image",
       "expo-status-bar",
-	  "expo-notifications",
+      "expo-notifications",
       "react-native-quick-crypto",
       [
         "expo-build-properties",
@@ -53,6 +53,11 @@
           "backgroundColor": "#FBF7F2"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "15b3aceb-61be-4823-b23b-750c9aa7e965"
+      }
+    }
   }
 }

@@ -16,13 +16,19 @@
       "node": "22.13.1",
       "distribution": "internal",
       "android": { "buildType": "apk" },
-      "env": { "APP_ENV": "staging" }
+      "env": {
+        "APP_ENV": "staging",
+        "EXPO_PUBLIC_API_URL": "https://mostlyvers-api.onrender.com/v1"
+      }
     },
     "production": {
       "environment": "production",
       "node": "22.13.1",
       "autoIncrement": true,
-      "env": { "APP_ENV": "production" }
+      "env": {
+        "APP_ENV": "production",
+        "EXPO_PUBLIC_API_URL": "https://mostlyvers-api.onrender.com/v1"
+      }
     }
   }
 }
