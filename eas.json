@@ -4,17 +4,23 @@
   },
   "build": {
     "development": {
+      "environment": "development",
+      "node": "22.13.1",
       "developmentClient": true,
       "distribution": "internal",
       "android": { "buildType": "apk" },
       "env": { "APP_ENV": "development" }
     },
     "staging": {
+      "environment": "preview",
+      "node": "22.13.1",
       "distribution": "internal",
       "android": { "buildType": "apk" },
       "env": { "APP_ENV": "staging" }
     },
     "production": {
+      "environment": "production",
+      "node": "22.13.1",
       "autoIncrement": true,
       "env": { "APP_ENV": "production" }
     }

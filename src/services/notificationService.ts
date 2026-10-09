@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 import api from './api';
 import type { NotificationPage } from '../types/api';
 
@@ -11,7 +12,11 @@ Notifications.setNotificationHandler({
 export const notificationService = {
 	register: async () => {
 		if (!Device.isDevice) return;
-		const projectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID?.trim();
+		const projectId = (
+			process.env.EXPO_PUBLIC_EAS_PROJECT_ID
+			|| Constants.easConfig?.projectId
+			|| Constants.expoConfig?.extra?.eas?.projectId
+		)?.trim();
 		if (!projectId || /^0+$/.test(projectId.replace(/-/g, ''))) return;
 		if (Platform.OS === 'android') await Notifications.setNotificationChannelAsync('default', { name: 'MOSTLYVERS', importance: Notifications.AndroidImportance.DEFAULT });
 		let permission = await Notifications.getPermissionsAsync();
