@@ -9,7 +9,7 @@
     "userInterfaceStyle": "light",
     "android": {
       "package": "com.mostlyvers.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/mostlyvers-logo.png",
         "backgroundColor": "#FBF7F2"

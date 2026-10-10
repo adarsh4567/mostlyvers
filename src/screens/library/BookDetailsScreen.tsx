@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -14,6 +14,9 @@ import { formatPublishDate } from '../../utils/dateFormat';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { deviceService } from '../../services/deviceService';
+import { runDeviceGatedAction } from '../../services/deviceGatedAction';
+import { updateDeviceAccess } from '../../store/slices/authSlice';
 
 type ParamList = {
   BookDetails: { bookId: string };
@@ -59,8 +62,26 @@ const BookDetailsScreen = () => {
     if (!book) return;
     try {
       setIsPurchasing(true);
-	  if (accessMode !== 'FULL') throw new Error('Transfer this account to the current device before claiming books.');
-	  await purchaseService.claimBook(bookId);
+	  const claimed = await runDeviceGatedAction({
+        accessMode,
+        confirmTransfer: () => new Promise<boolean>((resolve) => {
+          Alert.alert(
+            'Authorize this device?',
+            'This account is linked to another installation. Transfer access to this phone for free and revoke the previous device?',
+            [
+              { text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },
+              { text: 'Transfer & Claim', onPress: () => resolve(true) },
+            ],
+            { cancelable: true, onDismiss: () => resolve(false) },
+          );
+        }),
+        transferDevice: async () => {
+          const deviceAccess = await deviceService.transferFree();
+          dispatch(updateDeviceAccess(deviceAccess));
+        },
+        action: () => purchaseService.claimBook(bookId),
+      });
+      if (!claimed) return;
       setBook(await bookService.getBookDetails(bookId));
 
       Toast.show({
