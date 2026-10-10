@@ -8,6 +8,7 @@ import { contentService, HomeContent } from '../../services/contentService';
 import { BookSummary } from '../../types/api';
 import { Colors, Fonts, Layout, Radii, Shadows } from '../../theme';
 import { useGetNotificationsQuery } from '../../store/apiSlice';
+import { BookCover } from '../../components/BookCover';
 
 export default function HomeScreen() {
   const navigation = useNavigation<any>();
@@ -70,7 +71,7 @@ export default function HomeScreen() {
 function ContinueReading({ item, onPress }: { item: NonNullable<HomeContent['continueReading']>; onPress: () => void }) {
   const percent = Math.max(0, Math.min(100, item.progress.progressPercent));
   return <View style={styles.continueBody}>
-    <Image source={item.book.coverUrl} style={styles.continueCover} contentFit="cover" />
+    <BookCover uri={item.book.coverUrl} title={item.book.title} style={styles.continueCover} />
     <View style={styles.continueInfo}><Text style={styles.bookTitle} numberOfLines={2}>{item.book.title}</Text><Text style={styles.chapter}>Your saved place</Text><Text style={styles.page}>Page {item.progress.locator.displayedPage || '—'} of {item.progress.locator.displayedPageCount || '—'}</Text><View style={styles.progressRow}><View style={styles.progressTrack}><View style={[styles.progressFill, { width: `${percent}%` }]} /></View><Text style={styles.percent}>{Math.round(percent)}%</Text></View></View>
     <TouchableOpacity style={styles.continueButton} onPress={onPress}><Text style={styles.continueButtonText}>CONTINUE</Text></TouchableOpacity>
   </View>;
@@ -79,7 +80,7 @@ function ContinueReading({ item, onPress }: { item: NonNullable<HomeContent['con
 function FeatureCard({ icon, title, book, imageUrl, copy, action, onPress }: { icon: keyof typeof Ionicons.glyphMap; title: string; book?: BookSummary; imageUrl?: string; copy?: string; action: string; onPress: () => void }) {
   return <TouchableOpacity style={styles.featureCard} onPress={onPress} activeOpacity={0.82}>
     <View style={styles.featureHeading}><Ionicons name={icon} size={20} color={Colors.accent} /><Text style={styles.featureTitle}>{title}</Text></View>
-    {book?.coverUrl || imageUrl ? <Image source={book?.coverUrl || imageUrl} style={book ? styles.featureCover : styles.authorPhoto} contentFit="cover" /> : <View style={styles.featureIllustration}><Ionicons name={icon} size={46} color={Colors.accent} /></View>}
+    {book ? <BookCover uri={book.coverUrl} title={book.title} style={styles.featureCover} /> : imageUrl ? <Image source={imageUrl} style={styles.authorPhoto} contentFit="cover" /> : <View style={styles.featureIllustration}><Ionicons name={icon} size={46} color={Colors.accent} /></View>}
     <Text style={styles.featureBookTitle} numberOfLines={2}>{book?.title}</Text>
     <Text style={styles.featureCopy} numberOfLines={3}>{book?.shortDescription || copy}</Text>
     <View style={styles.smallButton}><Text style={styles.smallButtonText}>{action}</Text></View>

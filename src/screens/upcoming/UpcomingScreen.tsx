@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import Header from '../../components/Header';
@@ -11,6 +10,7 @@ import { setUpcoming } from '../../store/slices/booksSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { formatPublishDate } from '../../utils/dateFormat';
+import { BookCover } from '../../components/BookCover';
 
 export default function UpcomingScreen() {
   const dispatch = useDispatch();
@@ -53,9 +53,9 @@ export default function UpcomingScreen() {
       renderItem={({ item }) => {
         const booked = item.ownership === 'PREBOOKED' || item.ownership === 'OWNED';
         return <View style={styles.card}>
-          <Image source={item.coverImage} style={styles.cover} contentFit="cover" />
+          <BookCover uri={item.coverImage} title={item.title} style={styles.cover} />
           <View style={styles.info}><Text style={styles.title} numberOfLines={2}>{item.title}</Text><Text style={styles.sparkle}>──── ✧</Text><Text style={styles.description} numberOfLines={3}>{item.description}</Text><View style={styles.tags}>{item.tags.slice(0, 2).map((tag: string) => <View style={styles.tag} key={tag}><Text style={styles.tagText}>{tag}</Text></View>)}</View><View style={styles.release}><Ionicons name="calendar-outline" size={13} color={Colors.textSecondary} /><Text style={styles.releaseText}>Expected Release: <Text style={{ color: Colors.prebookBtn }}>{formatPublishDate(item.publishedDate)}</Text></Text></View></View>
-		  <View style={styles.priceColumn}><View style={styles.badge}><Text style={styles.badgeText}>FREE LAUNCH PRE-BOOK</Text></View><Text style={styles.priceLabel}>Future Price</Text><Text style={styles.releasePrice}>₹{item.price}</Text><View style={styles.dash} /><Text style={styles.priceLabel}>Today</Text><Text style={styles.prebookPrice}>FREE</Text><View style={styles.actionRow}><TouchableOpacity style={[styles.prebookButton, booked && styles.booked]} onPress={() => handlePrebook(item)} disabled={booked || prebookingId === item._id}>{prebookingId === item._id ? <ActivityIndicator size="small" color={Colors.white} /> : <Text style={styles.buttonText}>{booked ? 'PRE-BOOKED ✓' : 'PRE-BOOK FREE'}</Text>}</TouchableOpacity><View style={styles.bookmark}><Ionicons name="bookmark-outline" size={19} color={Colors.prebookBtn} /></View></View></View>
+		  <View style={styles.priceColumn}><View style={styles.badge}><Text style={styles.badgeText}>FREE LAUNCH PRE-BOOK</Text></View><Text style={styles.priceLabel}>Price</Text><Text style={styles.releasePrice}>FREE</Text><View style={styles.dash} /><Text style={styles.priceLabel}>Pre-book today</Text><Text style={styles.prebookPrice}>FREE</Text><View style={styles.actionRow}><TouchableOpacity style={[styles.prebookButton, booked && styles.booked]} onPress={() => handlePrebook(item)} disabled={booked || prebookingId === item._id}>{prebookingId === item._id ? <ActivityIndicator size="small" color={Colors.white} /> : <Text style={styles.buttonText}>{booked ? 'PRE-BOOKED ✓' : 'PRE-BOOK FREE'}</Text>}</TouchableOpacity><View style={styles.bookmark}><Ionicons name="bookmark-outline" size={19} color={Colors.prebookBtn} /></View></View></View>
         </View>;
       }}
     />

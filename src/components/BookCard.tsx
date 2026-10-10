@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image';
 import { Book } from '../store/slices/booksSlice';
 import { Colors, Fonts, Radii, Shadows } from '../theme';
 import { formatPublishDate } from '../utils/dateFormat';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { BookCover } from './BookCover';
 
 interface BookCardProps {
   book: Book;
@@ -25,7 +25,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onPress, showPurchaseStatus, 
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       {/* Cover */}
       <View style={styles.imageContainer}>
-        <Image source={book.coverImage} style={styles.coverImage} contentFit="cover" />
+        <BookCover uri={book.coverImage} title={book.title} style={styles.coverImage} />
         {isNew() && (
           <View style={styles.newBadge}>
             <Text style={styles.newBadgeText}>NEW</Text>

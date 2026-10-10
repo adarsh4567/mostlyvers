@@ -177,3 +177,4 @@ export const formatMoney = (money?: Money): string => {
     return `${money.currency} ${(money.amountMinor / 100).toFixed(2)}`;
   }
 };
+export const formatBookPrice = (money?: Money): string => money?.amountMinor === 0 ? 'Free' : formatMoney(money);

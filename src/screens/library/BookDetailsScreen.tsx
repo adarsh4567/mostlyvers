@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { Image } from 'expo-image';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Colors, Fonts, Radii } from '../../theme';
@@ -17,6 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { deviceService } from '../../services/deviceService';
 import { runDeviceGatedAction } from '../../services/deviceGatedAction';
 import { updateDeviceAccess } from '../../store/slices/authSlice';
+import { BookCover } from '../../components/BookCover';
 
 type ParamList = {
   BookDetails: { bookId: string };
@@ -130,7 +130,7 @@ const BookDetailsScreen = () => {
           </View>
         </View>
 
-        <Image source={book.coverImage} style={styles.coverImage} contentFit="cover" />
+        <BookCover uri={book.coverImage} title={book.title} style={styles.coverImage} />
 
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{book.title}</Text>

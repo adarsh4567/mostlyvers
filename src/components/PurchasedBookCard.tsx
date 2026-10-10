@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { formatDistanceToNow } from 'date-fns';
 import { PurchasedBook } from '../store/slices/booksSlice';
 import { Colors, Fonts, Radii, Shadows } from '../theme';
+import { BookCover } from './BookCover';
 
 interface Props {
   book: PurchasedBook;
@@ -18,7 +18,7 @@ interface Props {
 export default function PurchasedBookCard({ book, onAction, progressPercent, lastReadDate, isDownloaded, hasStartedReading }: Props) {
   const page = book.bookmark?.page;
   return <View style={styles.card}>
-    <Image source={book.coverImage} style={styles.cover} contentFit="cover" />
+    <BookCover uri={book.coverImage} title={book.title} style={styles.cover} />
     <View style={styles.info}>
       <Text style={styles.title} numberOfLines={3}>{book.title}</Text>
       {hasStartedReading ? <><Text style={styles.chapter}>Continue your story</Text><View style={styles.pageRow}><Ionicons name="bookmark" size={14} color={Colors.primary} /><Text style={styles.page}>Page {page || '—'}{book.totalPages ? ` of ${book.totalPages}` : ''}</Text></View></> : <Text style={styles.notStarted}>You haven’t started reading yet.</Text>}

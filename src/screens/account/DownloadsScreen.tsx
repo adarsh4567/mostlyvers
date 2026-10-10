@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { Image } from 'expo-image';
 import { useNavigation } from '@react-navigation/native';
 import { Colors, Fonts, Radii, Shadows } from '../../theme';
 import Header from '../../components/Header';
@@ -11,6 +10,7 @@ import { downloadService } from '../../services/downloadService';
 import { removeDownload } from '../../store/slices/readingSlice';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { BookCover } from '../../components/BookCover';
 
 const DownloadsScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -72,7 +72,7 @@ const DownloadsScreen = () => {
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.card}>
       <View style={styles.topRow}>
-        <Image source={item.coverImage} style={styles.coverImage} contentFit="cover" />
+        <BookCover uri={item.coverImage} title={item.title} style={styles.coverImage} />
         <View style={styles.infoContainer}>
           <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
           <Text style={styles.date}>Downloaded on {item.downloadedOn}</Text>

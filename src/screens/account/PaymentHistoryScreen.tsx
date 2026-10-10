@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Image } from 'expo-image';
 import Header from '../../components/Header';
 import BackButton from '../../components/BackButton';
 import { purchaseService } from '../../services/purchaseService';
 import { formatMoney, Transaction } from '../../types/api';
 import { Colors, Fonts, Radii, Shadows } from '../../theme';
+import { BookCover } from '../../components/BookCover';
 
 export default function PaymentHistoryScreen() {
   const [items, setItems] = useState<Transaction[]>([]);
@@ -25,7 +25,7 @@ export default function PaymentHistoryScreen() {
     <FlatList data={items} keyExtractor={item => item.id} refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }}
       contentContainerStyle={styles.list} ListEmptyComponent={<View style={styles.center}><Ionicons name="receipt-outline" size={48} color={Colors.border} /><Text style={styles.empty}>No payment history found.</Text></View>}
       renderItem={({ item }) => <View style={styles.card}>
-        {item.book ? <Image source={item.book.coverUrl} style={styles.cover} contentFit="cover" /> : <View style={styles.icon}><Ionicons name="phone-portrait-outline" size={24} color={Colors.primary} /></View>}
+        {item.book ? <BookCover uri={item.book.coverUrl} title={item.book.title} style={styles.cover} /> : <View style={styles.icon}><Ionicons name="phone-portrait-outline" size={24} color={Colors.primary} /></View>}
         <View style={styles.info}><Text style={styles.title}>{item.book?.title || 'Device Change'}</Text><Text style={styles.meta}>{item.type.replaceAll('_', ' ')} · {new Date(item.createdAt).toLocaleDateString()}</Text><Text style={styles.reference}>{item.providerTransactionReference || item.id}</Text></View>
         <View style={styles.right}><Text style={styles.amount}>{formatMoney(item.amount)}</Text><Text style={[styles.status, item.status === 'COMPLETED' ? styles.success : styles.warning]}>{item.status}</Text></View>
       </View>} />

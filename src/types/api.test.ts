@@ -1,4 +1,4 @@
-import { formatMoney, isFullAccess } from './api';
+import { formatBookPrice, formatMoney, isFullAccess } from './api';
 
 describe('API domain helpers', () => {
   it('uses integer minor units for display', () => {
@@ -10,4 +10,9 @@ describe('API domain helpers', () => {
     expect(isFullAccess('BROWSE_ONLY')).toBe(false);
     expect(isFullAccess(undefined)).toBe(false);
   });
+});
+
+test('free-launch catalog prices are displayed as Free', () => {
+  expect(formatBookPrice({ amountMinor: 0, currency: 'INR' })).toBe('Free');
+  expect(formatBookPrice({ amountMinor: 13500, currency: 'INR' })).toContain('135');
 });

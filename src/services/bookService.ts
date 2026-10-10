@@ -1,5 +1,5 @@
 import api from './api';
-import { BookSummary, CursorPage, formatMoney } from '../types/api';
+import { BookSummary, CursorPage, formatBookPrice } from '../types/api';
 
 export const publicationDate = (book: BookSummary) =>
   new Date(Date.UTC(book.publicationYear, Math.max(0, book.publicationMonth - 1), 1)).toISOString();
@@ -10,14 +10,14 @@ export const toViewBook = (book: BookSummary) => ({
   description: book.shortDescription,
   publishedDate: publicationDate(book),
   price: (book.price?.amountMinor ?? 0) / 100,
-  localizedPrice: book.price ? formatMoney(book.price) : undefined,
+  localizedPrice: book.price ? formatBookPrice(book.price) : undefined,
   coverImage: book.coverUrl,
   tags: [] as string[],
   ownership: book.ownership,
   status: book.status,
   discountPercent: book.prebook?.discountPercent,
   prebookPrice: book.prebook?.price ? book.prebook.price.amountMinor / 100 : undefined,
-  prebookLocalizedPrice: book.prebook?.price ? formatMoney(book.prebook.price) : undefined,
+  prebookLocalizedPrice: book.prebook?.price ? formatBookPrice(book.prebook.price) : undefined,
   billing: book.billing,
   youtubeAvailability: book.youtubeAvailability,
 });

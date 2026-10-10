@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Linking, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image';
 import QRCode from 'react-native-qrcode-svg';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../../components/Header';
@@ -8,6 +7,7 @@ import { contentService } from '../../services/contentService';
 import { YoutubeAsset } from '../../types/api';
 import { Colors, Fonts, Radii, Shadows } from '../../theme';
 import { getSafeYoutubeUrl } from '../../utils/links';
+import { BookCover } from '../../components/BookCover';
 
 export default function QRScreen() {
   const [items, setItems] = useState<YoutubeAsset[]>([]);
@@ -41,7 +41,7 @@ function SongCard({ item }: { item: YoutubeAsset }) {
   const url = item.unlocked ? getSafeYoutubeUrl(item.youtubeUrl || item.qrPayload) : null;
   return <View style={styles.card}>
 	<View style={[styles.status, item.unlocked ? styles.purchased : styles.upcoming]}><Text style={styles.statusText}>{item.unlocked ? 'Owned ✓' : 'Locked'}</Text></View>
-    <Image source={item.coverUrl} style={styles.cover} contentFit="cover" />
+    <BookCover uri={item.coverUrl} title={item.title} style={styles.cover} />
     <View style={styles.info}><Text style={styles.title} numberOfLines={3}>{item.title}</Text><Text style={styles.author}>SIDDHI</Text><Text style={styles.miniOrnament}>────  ♫  ────</Text><Text style={styles.songCopy} numberOfLines={4}>{item.songName}</Text><View style={styles.themePill}><Ionicons name="musical-notes" size={13} color={Colors.primary} /><Text style={styles.themeText}>Book Song / Theme</Text></View></View>
     {url ? <View style={styles.qrPanel}><Text style={styles.watchTitle}>♫  Watch on YouTube</Text><View style={styles.qr}><QRCode value={url} size={76} color="#111" backgroundColor={Colors.white} /></View><TouchableOpacity style={styles.watchButton} onPress={() => Linking.openURL(url)}><Ionicons name="play" size={16} color={Colors.white} /><Text style={styles.watchButtonText}>WATCH ON YOUTUBE</Text></TouchableOpacity></View>
       : <View style={styles.locked}><Text style={styles.watchTitle}>♫  Watch on YouTube</Text><Ionicons name="lock-closed" size={34} color={Colors.primary} /><Text style={styles.lockedTitle}>QR Locked</Text><Text style={styles.lockedCopy}>Purchase this book to access its song QR.</Text></View>}
