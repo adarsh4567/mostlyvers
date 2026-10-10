@@ -44,6 +44,9 @@ export const initializeToken = async () => { currentToken = await getToken(); };
 export const setApiToken = (token: string | null) => { currentToken = token; };
 export const createIdempotencyKey = () => Crypto.randomUUID();
 
+export const shouldAttemptAuthRefresh = (url: string | undefined, status: number | undefined, retried: boolean): boolean =>
+  status === 401 && Boolean(url) && !retried && !url!.includes('/auth/');
+
 const api = axios.create({ baseURL: BASE_URL, timeout: API_TIMEOUT });
 const refreshClient = axios.create({ baseURL: BASE_URL, timeout: API_TIMEOUT });
 
@@ -72,8 +75,7 @@ api.interceptors.request.use(config => {
 
 api.interceptors.response.use(response => response, async (error: AxiosError<ApiProblem>) => {
   const original = error.config as (InternalAxiosRequestConfig & { _retried?: boolean }) | undefined;
-  const isRefresh = original?.url?.includes('/auth/refresh');
-  if (error.response?.status !== 401 || !original || original._retried || isRefresh) {
+  if (!original || !shouldAttemptAuthRefresh(original.url, error.response?.status, Boolean(original._retried))) {
     return Promise.reject(toApiError(error));
   }
   original._retried = true;
