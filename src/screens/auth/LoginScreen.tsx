@@ -12,6 +12,7 @@ import { authService } from '../../services/authService';
 import { setApiToken } from '../../services/api';
 import { useDispatch } from 'react-redux';
 import { setSession } from '../../store/slices/authSlice';
+import { userFacingErrorMessage } from '../../utils/errors';
 import { RootStackParamList } from '../../navigation/AppNavigator';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -43,8 +44,8 @@ const LoginScreen = () => {
       setApiToken(session.accessToken);
       dispatch(setSession(session));
       appNavigation.reset({ index: 0, routes: [{ name: 'Main' }] });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } catch (err: unknown) {
+      setError(userFacingErrorMessage(err, 'Login failed. Please try again.'));
     } finally {
       setIsLoading(false);
     }

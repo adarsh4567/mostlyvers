@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { setSession } from '../../store/slices/authSlice';
 import { RootStackParamList } from '../../navigation/AppNavigator';
 import * as ImagePicker from 'expo-image-picker';
+import { userFacingErrorMessage } from '../../utils/errors';
 
 type SignupScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
 type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -85,8 +86,8 @@ const SignupScreen = () => {
       dispatch(setSession(session));
 
       appNavigation.reset({ index: 0, routes: [{ name: 'Main' }] });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Signup failed. Please try again.');
+    } catch (err: unknown) {
+      setError(userFacingErrorMessage(err, 'Signup failed. Please try again.'));
     } finally {
       setIsLoading(false);
     }
