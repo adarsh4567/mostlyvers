@@ -14,6 +14,7 @@ import { ParsedEpub } from '../../utils/epub';
 import { RootState } from '../../store';
 import Toast from 'react-native-toast-message';
 import { queueProgress } from '../../services/progressQueue';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type ParamList = { BookReader: { bookId: string; startPage?: number; offline?: boolean } };
 const protectHtml = (html: string) => html.replace(/<head([^>]*)>/i,
@@ -21,6 +22,7 @@ const protectHtml = (html: string) => html.replace(/<head([^>]*)>/i,
 
 export default function BookReaderScreen() {
   usePreventScreenCapture();
+  const insets = useSafeAreaInsets();
   const route = useRoute<RouteProp<ParamList, 'BookReader'>>();
   const { bookId, startPage = 1, offline = false } = route.params;
   const readerId = useSelector((state: RootState) => state.auth.user?.id);
@@ -92,13 +94,13 @@ export default function BookReaderScreen() {
   };
 
   return <View style={styles.container}>
-    <View style={styles.header}><BackButton /><Text style={styles.headerTitle}>Location {index + 1} of {total || '—'}</Text>
+    <View style={[styles.header, { paddingTop: Math.max(insets.top, 16) }]}><BackButton /><Text style={styles.headerTitle}>Location {index + 1} of {total || '—'}</Text>
       <TouchableOpacity onPress={bookmark}><Ionicons name="bookmark-outline" size={24} color={Colors.primary} /></TouchableOpacity></View>
     <View style={styles.content}>{loading && <View style={styles.loader}><ActivityIndicator size="large" color={Colors.accent} /></View>}
       <WebView originWhitelist={['about:blank']} source={{ html }} style={[styles.webview, loading && { opacity: 0 }]}
         onShouldStartLoadWithRequest={request => request.url === 'about:blank'} javaScriptEnabled={false} allowsLinkPreview={false}
         showsVerticalScrollIndicator={false} bounces={false} /></View>
-    <View style={styles.footer}>
+    <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
       <TouchableOpacity onPress={() => setIndex(value => Math.max(0, value - 1))} disabled={index === 0} style={styles.navButton}>
         <Ionicons name="chevron-back" size={24} color={index === 0 ? Colors.border : Colors.primary} /><Text style={[styles.navText, index === 0 && styles.disabled]}>Prev</Text></TouchableOpacity>
       <TouchableOpacity onPress={() => setIndex(value => Math.min(total - 1, value + 1))} disabled={!total || index >= total - 1} style={styles.navButton}>
@@ -112,6 +114,6 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 48, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: Colors.border },
   headerTitle: { fontSize: 16, fontWeight: 'bold', color: Colors.textPrimary }, content: { flex: 1 },
   loader: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, justifyContent: 'center', alignItems: 'center', zIndex: 1 }, webview: { flex: 1, backgroundColor: 'transparent' },
-  footer: { flexDirection: 'row', justifyContent: 'space-between', padding: 16, paddingBottom: 32, borderTopWidth: 1, borderTopColor: Colors.border, backgroundColor: Colors.white },
+  footer: { flexDirection: 'row', justifyContent: 'space-between', padding: 16, borderTopWidth: 1, borderTopColor: Colors.border, backgroundColor: Colors.white },
   navButton: { flexDirection: 'row', alignItems: 'center', padding: 8 }, navText: { fontSize: 16, fontWeight: 'bold', color: Colors.primary, marginHorizontal: 4 }, disabled: { color: Colors.border },
 });

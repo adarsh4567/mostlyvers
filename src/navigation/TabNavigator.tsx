@@ -27,6 +27,7 @@ import NotificationsScreen from '../screens/account/NotificationsScreen';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { shouldShowFloatingTabBar } from './tabBarVisibility';
 
 export type HomeStackParamList = { HomeScreen: undefined };
 export type LibraryStackParamList = { LibraryScreen: undefined; BookDetailsScreen: { bookId: string } };
@@ -68,6 +69,8 @@ const TAB_ITEMS = [
 const FloatingTabBar = ({ state, descriptors, navigation }: any) => {
   const insets = useSafeAreaInsets();
   const bottomInset = insets.bottom > 0 ? insets.bottom : 12;
+
+  if (!shouldShowFloatingTabBar(state)) return null;
 
   return (
     <View style={[styles.floatingBar, { bottom: bottomInset }]}>

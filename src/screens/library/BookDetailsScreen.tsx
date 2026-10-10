@@ -13,6 +13,7 @@ import { RootState } from '../../store';
 import { formatPublishDate } from '../../utils/dateFormat';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type ParamList = {
   BookDetails: { bookId: string };
@@ -21,6 +22,7 @@ type ParamList = {
 const BookDetailsScreen = () => {
   const route = useRoute<RouteProp<ParamList, 'BookDetails'>>();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
 
   const { bookId } = route.params;
@@ -31,6 +33,13 @@ const BookDetailsScreen = () => {
   const [isPurchasing, setIsPurchasing] = useState(false);
 
   const isPurchased = book?.ownership === 'OWNED';
+
+  const openReader = () => {
+    navigation.getParent()?.navigate('ReadingStack', {
+      screen: 'BookReaderScreen',
+      params: { bookId },
+    });
+  };
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -59,7 +68,7 @@ const BookDetailsScreen = () => {
 		text1: 'Book Claimed!',
         text2: `You can now read ${book.title}`,
       });
-
+      openReader();
     } catch (error: any) {
       Toast.show({
         type: 'error',
@@ -90,7 +99,10 @@ const BookDetailsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView bounces={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        bounces={false}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: 104 + Math.max(insets.bottom, 16) }]}
+      >
         <View style={styles.headerAbsolute}>
           <View style={styles.backButtonBg}>
              <BackButton color={Colors.white} />
@@ -133,14 +145,14 @@ const BookDetailsScreen = () => {
         </View>
       </ScrollView>
 
-      <View style={styles.bottomBar}>
+      <View style={[styles.bottomBar, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         {isPurchased ? (
           <TouchableOpacity
             style={[styles.actionButton, styles.purchasedButton]}
-            onPress={() => navigation.navigate('ReadingStack', { screen: 'ReadingScreen' })}
+            onPress={openReader}
           >
-            <Text style={styles.purchasedButtonText}>PURCHASED ✓</Text>
-            <Text style={styles.purchasedSubText}>GO TO READING</Text>
+            <Text style={styles.purchasedButtonText}>READ NOW</Text>
+            <Text style={styles.purchasedSubText}>OWNED ✓</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -172,7 +184,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContent: {
-    paddingBottom: 100, // space for bottom bar
+    paddingBottom: 120,
   },
   headerAbsolute: {
     position: 'absolute',
@@ -282,7 +294,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: 32,
+    paddingBottom: 16,
     borderTopWidth: 1,
     borderTopColor: Colors.border,
     shadowColor: '#000',
